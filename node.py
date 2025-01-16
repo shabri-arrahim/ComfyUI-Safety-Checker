@@ -25,9 +25,9 @@ class FalconAISafetyChecker:
         paths = []
         for search_path in folder_paths.get_folder_paths("diffusers"):
             if os.path.exists(search_path):
-                for root, dir, files in os.walk(search_path, followlinks=True):
-                    if "model_index.jsion" in files or "config.json" in files:
-                        paths.append(os.path.realpath(root))
+                for root, dirs, files in os.walk(search_path, followlinks=True):
+                    if "model_index.json" in files or "config.json" in files:
+                        paths.append(root)
 
         return {
             "required": {
