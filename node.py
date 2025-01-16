@@ -27,7 +27,7 @@ class FalconAISafetyChecker:
             if os.path.exists(search_path):
                 for root, dir, files in os.walk(search_path, followlinks=True):
                     if "model_index.jsion" in files or "config.json" in files:
-                        paths.append(os.path.realpath(root, start=search_path))
+                        paths.append(os.path.realpath(root))
 
         return {
             "required": {
