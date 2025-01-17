@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-safety-checker"
+description = "This project provides custom safety checkers for image classification using Falcons AI and CompVis models. The safety checkers are designed to detect and filter out NSFW content from images."
+version = "0.1"
+license = { file = "LICENSE" }
+dependencies = ["transformers"]
+
+[project.urls]
+Repository = "https://github.com/shabri-arrahim/ComfyUI-Safety-Checker"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "shabri-arrahim"
+DisplayName = "ComfyUI Safety Checker"
+Icon = ""
