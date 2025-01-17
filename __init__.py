@@ -1,3 +1,4 @@
-from .node import NODE_CLASS_MAPPINGS
+from .nodes import NODE_CLASS_MAPPINGS
 
-__all__ = ['NODE_CLASS_MAPPINGS']
+NODE_DISPLAY_NAME_MAPPINGS = {k: v.TITLE for k, v in NODE_CLASS_MAPPINGS.items()}
+__all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]
