@@ -20,7 +20,7 @@ This project provides custom safety checkers for image classification using Falc
 
    ```sh
    git clone https://github.com/shabri-arrahim/ComfyUI-Safety-Checker.git
-   cd ProjectNUWA
+   cd ComfyUI-Safety-Checker
    ```
 
 2. Install the required dependencies:
