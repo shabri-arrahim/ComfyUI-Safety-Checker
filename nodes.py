@@ -167,16 +167,20 @@ class FalconsAISafetyChecker:
 
     @classmethod
     def INPUT_TYPES(s):
-        paths = []
+        models = []
         for search_path in folder_paths.get_folder_paths("diffusers"):
             if os.path.exists(search_path):
                 for root, dirs, files in os.walk(search_path, followlinks=True):
-                    if "model_index.json" in files or "config.json" in files:
-                        paths.append(root)
+                    models.extend(
+                    dir for dir in dirs
+                    if "model_index.json" in os.listdir(os.path.join(root, dir)) or
+                    "config.json" in os.listdir(os.path.join(root, dir))
+                    )
+                    break  # Only need the top-level directories
 
         return {
             "required": {
-                "model_path": (paths,),
+                "model_name": (models,),
                 "image": ("IMAGE",),
                 "safety_threshold": (
                     "FLOAT",
@@ -200,7 +204,8 @@ class FalconsAISafetyChecker:
 
     TITLE = "Falcons AI Safety Checker"
 
-    def run(self, model_path, image, safety_threshold):
+    def run(self, model_name, image, safety_threshold):
+        model_path = f"{folder_paths.get_folder_paths('diffusers')[0]}/{model_name}"
         if (
             isinstance(image, list)
             or isinstance(image, torch.Tensor)
@@ -230,16 +235,20 @@ class CompVisSafetyChecker:
 
     @classmethod
     def INPUT_TYPES(s):
-        paths = []
+        models = []
         for search_path in folder_paths.get_folder_paths("diffusers"):
             if os.path.exists(search_path):
                 for root, dirs, files in os.walk(search_path, followlinks=True):
-                    if "model_index.json" in files or "config.json" in files:
-                        paths.append(root)
+                    models.extend(
+                    dir for dir in dirs
+                    if "model_index.json" in os.listdir(os.path.join(root, dir)) or
+                    "config.json" in os.listdir(os.path.join(root, dir))
+                    )
+                    break  # Only need the top-level directories
 
         return {
             "required": {
-                "model_path": (paths,),
+                "model_name": (models,),
                 "image": ("IMAGE",),
                 "safety_threshold": (
                     "FLOAT",
@@ -263,9 +272,10 @@ class CompVisSafetyChecker:
 
     TITLE = "CompVis Safety Checker"
 
-    def run(self, model_path, image, safety_threshold):
+    def run(self, model_name, image, safety_threshold):
         global s_treshold
 
+        model_path = f"{folder_paths.get_folder_paths('diffusers')[0]}/{model_name}"
         if (
             isinstance(image, list)
             or isinstance(image, torch.Tensor)
