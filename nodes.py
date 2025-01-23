@@ -2,6 +2,8 @@ import os
 import torch
 import logging
 import numpy as np
+import cv2
+import base64
 
 import folder_paths
 import torchvision.transforms as T
@@ -309,8 +311,53 @@ class CompVisSafetyChecker:
 
         return (label, (image,))
 
+# inspire by: https://github.com/yolain/ComfyUI-Easy-Use/blob/65937a75ebdbe5c35afe6474dfe12673aca5f0ac/py/image.py#L1614
+class loadImageBase64:
+  @classmethod
+  def INPUT_TYPES(s):
+    return {
+      "required": {
+        "base64_data": ("STRING", {"default": ""}),
+      },
+    }
+
+  RETURN_TYPES = ("IMAGE", "MASK")
+
+  FUNCTION = "load_image"
+
+  CATEGORY = "SafetyChecker/utils/LoadImage"
+
+  TITLE = "Load Base64 Image"
+
+  def convert_color(self, image,):
+    if len(image.shape) > 2 and image.shape[2] >= 4:
+      return cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
+    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+  def load_image(self, base64_data):
+    nparr = np.frombuffer(base64.b64decode(base64_data), np.uint8)
+
+    result = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
+    channels = cv2.split(result)
+    if len(channels) > 3:
+      mask = channels[3].astype(np.float32) / 255.0
+      mask = torch.from_numpy(mask)
+      mask = 1. - torch.from_numpy(mask)
+    else:
+      mask = torch.ones(channels[0].shape, dtype=torch.float32, device="cpu")
+
+    result = self.convert_color(result)
+    result = result.astype(np.float32) / 255.0
+    new_images = torch.from_numpy(result)[None,]
+
+    mask = mask.unsqueeze(0)
+
+   
+    return (new_images, mask)
+
 
 NODE_CLASS_MAPPINGS = {
     "FalconsAISafetyChecker": FalconsAISafetyChecker,
     "CompVisSafetyChecker": CompVisSafetyChecker,
+    "loadImageBase64": loadImageBase64,
 }
