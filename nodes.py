@@ -341,7 +341,6 @@ class loadImageBase64:
     channels = cv2.split(result)
     if len(channels) > 3:
       mask = channels[3].astype(np.float32) / 255.0
-      mask = torch.from_numpy(mask)
       mask = 1. - torch.from_numpy(mask)
     else:
       mask = torch.ones(channels[0].shape, dtype=torch.float32, device="cpu")
